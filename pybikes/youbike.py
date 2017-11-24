@@ -3,7 +3,7 @@ import re
 import json
 import zlib
 from pkg_resources import resource_string
-from itertools import imap
+
 
 from lxml import etree
 
@@ -44,10 +44,10 @@ class YouBike(BikeShareSystem):
         # we have.
         self.city_bounds = []
         for bound in city_bounds:
-            coords = filter(None, bound.text.split('\n'))
+            coords = [_f for _f in bound.text.split('\n') if _f]
             # We got the kml with lng / lat
-            coords = map(lambda c: reversed(c.split(',')), coords)
-            coords = map(lambda ll: map(float, ll), coords)
+            coords = [reversed(c.split(',')) for c in coords]
+            coords = [list(map(float, ll)) for ll in coords]
             self.city_bounds.append(coords)
 
     def update(self, scraper=None):
@@ -56,11 +56,11 @@ class YouBike(BikeShareSystem):
         data_m = re.search(r'siteContent=\'({.+?})\';', html)
         data = json.loads(data_m.group(1))
         filtered_data = filter_bounds(
-            data.itervalues(),
+            iter(data.values()),
             lambda s: (float(s['lat']), float(s['lng'])),
             * self.city_bounds
         )
-        self.stations = map(YouBikeStation, filtered_data)
+        self.stations = list(map(YouBikeStation, filtered_data))
 
 
 class YouBikeStation(BikeShareStation):

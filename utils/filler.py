@@ -10,7 +10,7 @@ import sys, traceback
 import time
 import json
 import argparse
-from urlparse import urlparse
+from urllib.parse import urlparse
 from collections import namedtuple
 import traceback
 from googlegeocoder import GoogleGeocoder
@@ -96,7 +96,7 @@ def print_status(i, total, status):
     status_pattern = "\r{0}/{1}: [{2}] {3}"
     output = status_pattern.format(i, total, progress, status)
     sys.stderr.flush()
-    sys.stderr.write(unicode(output))
+    sys.stderr.write(str(output))
     sys.stderr.flush()
     if (i == total):
         sys.stderr.write('\n')
@@ -131,8 +131,8 @@ def geocode(instance, systemCls, language, address = None):
     try:
         info = geocoder.get(query, language = language)
     except Exception as e:
-        print e
-        address = raw_input('Type an address: ')
+        print(e)
+        address = input('Type an address: ')
         return geocode(instance, systemCls, language, address)
     if args.interactive:
         for index, address in enumerate(info):
@@ -141,12 +141,12 @@ def geocode(instance, systemCls, language, address = None):
         sys.stderr.write("%d: Manual address lookup\n" % int(len(info)+1))
         sys.stderr.write('\n')
         try:
-            res = int(raw_input('Select option (number): '))
+            res = int(input('Select option (number): '))
             if res == len(info):
-                language = raw_input('New language? ')
+                language = input('New language? ')
                 return geocode(instance, systemCls, language)
             elif res == len(info)+1:
-                address = raw_input('Type an address: ')
+                address = input('Type an address: ')
                 return geocode(instance, systemCls, language, address)
             elif res < len(info):
                 address = info[res]
@@ -159,7 +159,7 @@ def geocode(instance, systemCls, language, address = None):
                 sys.stderr.write('Longitude: %s\n' % str(lng))
                 sys.stderr.write('\n')
                 for meta in metas:
-                    res = raw_input('Select the %s: ' % meta)
+                    res = input('Select the %s: ' % meta)
                     if ',' in res:
                         res = res.split(',')
                     else:
@@ -178,7 +178,7 @@ def geocode(instance, systemCls, language, address = None):
                 instance['meta'] = metainfo
                 return True
         except Exception as e:
-            print e
+            print(e)
             return geocode(instance, systemCls, language)
 
     if args.verbose:
@@ -206,7 +206,7 @@ def handle_System(schema, cls, instances):
     lastlen = 0
 
     if args.interactive and args.geocode:
-        language = raw_input('Desired geocoding language? ')
+        language = input('Desired geocoding language? ')
 
     for i, instance in enumerate(instances):
         if not args.verbose:
@@ -223,10 +223,10 @@ def handle_System(schema, cls, instances):
             tag = slugify(instance['meta']['name'])
             r   = None
             if args.interactive:
-                r = raw_input(prompts['slug'].format(old_tag = instance['tag'],
+                r = input(prompts['slug'].format(old_tag = instance['tag'],
                                                      new_tag = tag))
                 if r == 'set':
-                    tag = raw_input("Set new tag: ")
+                    tag = input("Set new tag: ")
                 elif r == 'n':
                     continue
             if r != 'n' or args.overwrite or 'tag' not in instance or 'tag' == '':
@@ -255,7 +255,7 @@ def main():
 
     data = json.loads(args.input.read())
     args.input.close()
-    if isinstance(data['class'], unicode):
+    if isinstance(data['class'], str):
         #UniSystem
         instances = data['instances']
         system = data['system']
@@ -285,7 +285,7 @@ if __name__ == "__main__":
                 traceback.print_exc(file=sys.stderr)
             write_output(data, args.output)
     except KeyboardInterrupt as e:
-        print "KEYBOARD INTERRUPT"
+        print("KEYBOARD INTERRUPT")
         if args.continuous:
             if args.verbose:
                 sys.stderr.write("Writing file bc exception\n")

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 from lxml import etree
 
@@ -45,7 +45,7 @@ class Nextgal(BikeShareSystem):
         tree = etree.XML(data.encode('utf-8'))
         stations_xml = tree.xpath('//ab:EstacionAdditionalInformationDto',
                                   namespaces=NS)
-        self.stations = map(NextgalStation, stations_xml)
+        self.stations = list(map(NextgalStation, stations_xml))
 
 
 class NextgalStation(BikeShareStation):

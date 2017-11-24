@@ -102,11 +102,11 @@ class Bicicard(BikeShareSystem):
             name = placemark.findtext('kml:name', namespaces = _kml_ns)
             name_id = placemark.findtext('kml:description',
                                       namespaces = _kml_ns)
-            coor = map(
+            coor = list(map(
                 float, placemark.findtext('.//kml:coordinates',
                                           namespaces = _kml_ns).
                        split(',')[0:2]
-            )
+            ))
 
             # Find a status table with the name_id of this station, XPath
             # performance on this query is not really costly so far.

@@ -39,7 +39,7 @@ class BySykkel(BikeShareSystem):
         # Join stationsdata in stations
         stations = [
             (stations_data[id], details_data[id])
-            for id in stations_data.keys()
+            for id in list(stations_data.keys())
         ]
 
         # append all data to info part of stations and create objects of this

@@ -8,7 +8,7 @@ import hashlib
 from .base import BikeShareSystem, BikeShareStation
 from . import utils
 
-SECRET = 'APP_INICIO'
+SECRET = 'APP_INICIO'.encode('utf-8')
 ID_SECURITY = '{}{}'.format(hashlib.md5(SECRET * 2).hexdigest(),
                             hashlib.md5(SECRET).hexdigest())
 BODY_DICT = {
@@ -44,7 +44,7 @@ class Bonopark(BikeShareSystem):
             scraper.request(self.feed_url, 'POST', data=json.dumps(BODY_DICT))
         )
 
-        self.stations = map(BonoparkStation, data['estaciones'])
+        self.stations = list(map(BonoparkStation, data['estaciones']))
 
 
 class BonoparkStation(BikeShareStation):

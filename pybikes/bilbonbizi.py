@@ -33,7 +33,7 @@ class BilbonBizi(BikeShareSystem):
         tree = etree.fromstring(raw)
         stationList = tree.xpath('/RESPUESTA/LISTA/DETALLE')
 
-        self.stations = map(BilbonBiziStation, stationList)
+        self.stations = list(map(BilbonBiziStation, stationList))
 
 
 class BilbonBiziStation(BikeShareStation):

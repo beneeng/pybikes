@@ -14,7 +14,7 @@ class GeneralPurposeEncoder(json.JSONEncoder):
         if isinstance(obj, datetime):
             return obj.isoformat()
         else:
-            return {k: v for k, v in obj.__dict__.items() if not k.startswith('_')}
+            return {k: v for k, v in list(obj.__dict__.items()) if not k.startswith('_')}
 
 class BikeShareStation(object):
     """A base class to name a bike sharing Station. It can be:

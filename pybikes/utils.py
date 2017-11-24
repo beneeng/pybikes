@@ -3,13 +3,14 @@
 # Distributed under the AGPL license, see LICENSE.txt
 
 import re
-from itertools import imap
 
+import logging
 import requests
 from shapely.geometry import Polygon, Point, box
 
 from pybikes.base import BikeShareStation
 
+logger = logging.getLogger(__name__)
 
 def str2bool(v):
     return v.lower() in ["yes", "true", "t", "1"]
@@ -17,17 +18,17 @@ def str2bool(v):
 
 def sp_capwords(word):
     blacklist = [
-        u'el', u'la', u'los', u'las',
-        u'un', u'una', u'unos', u'unas',
-        u'lo', u'al', u'del',
-        u'a', u'ante', u'bajo', u'cabe', u'con', u'contra', u'de', u'desde',
-        u'en', u'entre', u'hacia', u'hasta', u'mediante', u'para', u'por',
-        u'según', u'sin',
+        'el', 'la', 'los', 'las',
+        'un', 'una', 'unos', 'unas',
+        'lo', 'al', 'del',
+        'a', 'ante', 'bajo', 'cabe', 'con', 'contra', 'de', 'desde',
+        'en', 'entre', 'hacia', 'hasta', 'mediante', 'para', 'por',
+        'según', 'sin',
         # Catala | Valencia | Mallorqui
-        u'ses', u'sa', u'ses'
+        'ses', 'sa', 'ses'
     ]
     word = word.lower()
-    cap_lambda = lambda (i, w): w.capitalize() if i == 0 or w not in blacklist else w
+    cap_lambda = lambda i_w: i_w[1].capitalize() if i_w[0] == 0 or i_w[1] not in blacklist else i_w[1]
     return " ".join(map(cap_lambda, enumerate(word.split())))
 
 
@@ -69,7 +70,8 @@ class PyBikesScraper(object):
             # to disable it
             verify=self.ssl_verification,
         )
-
+        if response.text is None:
+            logger.debug("response to %s is: \n %s", url, response)
         data = response.text
 
         # Somehow requests defaults to ISO-8859-1 (when no encoding
@@ -109,6 +111,7 @@ class PyBikesScraper(object):
         self.proxy_enabled = False
 
 
+
 def filter_bounds(things, key, *point_bounds):
     def default_getter(thing):
         if isinstance(thing, BikeShareStation):
@@ -130,6 +133,6 @@ def filter_bounds(things, key, *point_bounds):
 
     for thing in things:
         point = Point(*key(thing))
-        if not any(imap(lambda pol: pol.contains(point), bounds)):
+        if not any(map(lambda pol: pol.contains(point), bounds)):
             continue
         yield thing

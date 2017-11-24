@@ -3,7 +3,7 @@
 # Distributed under the LGPL license, see LICENSE.txt
 
 import json
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 from lxml import html, etree
 from lxml.cssselect import CSSSelector
@@ -45,7 +45,7 @@ class GoBike(BikeShareSystem):
             for uid, bikes in self._parse_page(page):
                 stations_by_id[uid].bikes = bikes
 
-        self.stations = stations_by_id.values()
+        self.stations = list(stations_by_id.values())
 
     def _get_all_pages(self, scraper, n_stations):
         n_pages = n_stations/PAGE_SIZE + (n_stations % PAGE_SIZE > 0)
@@ -91,10 +91,10 @@ class GoBikeStation(BikeShareStation):
         ]
         address = []
         for section in address_sections:
-            components = filter(None, (location.get(k) for k in section))
+            components = [_f for _f in (location.get(k) for k in section) if _f]
             part = ' '.join(components)
             address.append(part)
-        address = filter(None, address)
+        address = [_f for _f in address if _f]
         address = ', '.join(address)
 
         return address
@@ -114,7 +114,7 @@ class GoBikeXML(BikeShareSystem):
         scraper = scraper or utils.PyBikesScraper()
         xml_stations = scraper.request(self.feed_url).encode('utf8')
         stations = etree.fromstring(xml_stations).xpath('//DockingStation')
-        self.stations = map(GoBikeXMLStation, stations)
+        self.stations = list(map(GoBikeXMLStation, stations))
 
 
 class GoBikeXMLStation(BikeShareStation):

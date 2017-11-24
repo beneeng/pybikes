@@ -55,9 +55,9 @@ class Nextbike(BikeShareSystem):
                 return (float(lat), float(lng))
             places = filter_bounds(places, getter, self.bbox)
         # For now ignore bikes roaming around
-        places = filter(lambda p: p.attrib.get('bike', '') != '1', places)
+        places = [p for p in places if p.attrib.get('bike', '') != '1']
 
-        self.stations = map(NextbikeStation, places)
+        self.stations = list(map(NextbikeStation, places))
 
 
 class NextbikeStation(BikeShareStation):
@@ -79,7 +79,7 @@ class NextbikeStation(BikeShareStation):
         if 'bike_types' in place.attrib:
             self.bikes = 0
             bike_types = json.loads(place.attrib['bike_types'])
-            for value in bike_types.values():
+            for value in list(bike_types.values()):
                 try:
                     self.bikes += value
                 except TypeError:

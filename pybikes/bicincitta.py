@@ -3,7 +3,7 @@
 # Distributed under the LGPL license, see LICENSE.txt
 
 import re
-import HTMLParser
+import html.parser
 
 from .base import BikeShareSystem, BikeShareStation
 from . import utils
@@ -38,7 +38,7 @@ class Bicincitta(BikeShareSystem):
         data = scraper.request(url)
         raw = re.findall(Bicincitta._RE_INFO, data)
         info = raw[0].split('\',\'')
-        info = map(lambda chunk: chunk.split('|'), info)
+        info = [chunk.split('|') for chunk in info]
         # Yes, this is a joke
         names = info[5]
         descs = info[7]

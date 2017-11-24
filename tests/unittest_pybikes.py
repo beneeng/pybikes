@@ -5,6 +5,17 @@ import re
 import unittest
 import sys
 
+import logging
+
+rootLogger = logging.getLogger()
+rootLogger.setLevel(logging.DEBUG)
+logHandler = logging.StreamHandler(sys.stderr)
+
+logHandler.setFormatter(logging.Formatter("%(asctime)-15s %(levelname)s: %(message)s"))
+
+rootLogger.addHandler(logHandler)
+
+
 import pybikes
 try:
     import keys
@@ -21,7 +32,7 @@ except ImportError:
 class TestSystems(unittest.TestCase):
     def _test_systems(self, schema):
         key = getattr(keys, schema, None)
-        print('\nTesting %s' % schema)
+        print(('\nTesting %s' % schema))
         print('=============================')
         for cname, instance in pybikes.get_instances(schema):
             self._test_system(instance['tag'], key)
@@ -32,7 +43,7 @@ class TestSystems(unittest.TestCase):
             - Tests okayness of 5 stations on the system
         """
         p_sys = pybikes.get(tag, key)
-        print(u'Testing {!r}, {!r}'.format(p_sys.meta['name'], p_sys.meta.get('city')))
+        print(('Testing {!r}, {!r}'.format(p_sys.meta['name'], p_sys.meta.get('city'))))
         self._test_update(p_sys)
         station_string = ""
         if len(p_sys.stations) < 5:
@@ -40,7 +51,7 @@ class TestSystems(unittest.TestCase):
         else:
             t_range = 5
         for i in range(t_range):
-            station_string += unichr(ord(u'▚') + i)
+            station_string += chr(ord('▚') + i)
             sys.stdout.flush()
             sys.stdout.write('\r[%s] testing %d' % (station_string, i+1))
             sys.stdout.flush()
@@ -80,9 +91,9 @@ class TestSystems(unittest.TestCase):
             allows a PyBikesScraper parameter
         """
         instance.update()
-        print("%s has %d stations" % (
+        print(("%s has %d stations" % (
             instance.meta['name'], len(instance.stations)
-        ))
+        )))
         self.assertTrue(len(instance.stations) > 0)
         self._test_allows_parameter(instance)
 
@@ -279,7 +290,7 @@ class TestDataFiles(unittest.TestCase):
                                   msg=('Error in %r on ' % field) + msg)
         for field in ['city', 'country', 'name']:
             self.assertIn(field, meta, msg=('Missing %r on ' % field) + msg)
-            self.assertIsInstance(meta[field], basestring,
+            self.assertIsInstance(meta[field], str,
                                   msg=('Error in %r on ' % field) + msg)
 
 
@@ -374,7 +385,7 @@ def create_test_system_method(schema, tag):
         self._test_system(tag, key)
     return test_system
 
-schemas = map(lambda name: re.sub(r'\.json$', '', name), pybikes.get_all_data())
+schemas = [re.sub(r'\.json$', '', name) for name in pybikes.get_all_data()]
 for schema in schemas:
     test_schema = create_test_schema_method(schema)
     test_schema.__name__ = 'test_%s' % schema

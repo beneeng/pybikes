@@ -70,7 +70,7 @@ class SmooveAPI(Smoove):
             # inoperative stations have 'coordinates': '', skip them
             if s['coordinates'] == '':
                 continue
-            lat, lng = map(float, s['coordinates'].split(','))
+            lat, lng = list(map(float, s['coordinates'].split(',')))
             name = s['name']
             bikes = int(s['avl_bikes'])
             free = int(s['free_slots'])

@@ -40,7 +40,7 @@ class Keolis(BikeShareSystem):
             scraper = utils.PyBikesScraper()
         raw_fuzzle = scraper.request(self.feed_url)
         data = re.findall(Keolis._re_fuzzle, raw_fuzzle)
-        self.stations = map(KeolisStation, data)
+        self.stations = list(map(KeolisStation, data))
 
 class KeolisStation(BikeShareStation):
     def __init__(self, data):

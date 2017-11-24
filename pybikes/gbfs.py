@@ -25,7 +25,7 @@ class Gbfs(BikeShareSystem):
             scraper = utils.PyBikesScraper()
 
         # Make the request to gbfs.json and convert to json
-        html_data = json.loads(scraper.request(self.feed_url, raw=True))
+        html_data = json.loads(scraper.request(self.feed_url, raw=True).decode())
 
         # Create a dict with name-url pairs for easier access
         # of urls (just in case)
@@ -48,7 +48,7 @@ class Gbfs(BikeShareSystem):
         # Any station not in station_information will be ignored
         stations = [
             (station_information[uid], station_status[uid])
-            for uid in station_information.keys()
+            for uid in list(station_information.keys())
         ]
         self.stations = []
         for info, status in stations:
@@ -79,7 +79,7 @@ class GbfsStation(BikeShareStation):
         if not info['is_installed']:
             raise exceptions.StationPlannedException()
 
-        self.name = unicode(info['name'])
+        self.name = str(info['name'])
         self.bikes = int(info['num_bikes_available'])
         self.free = int(info['num_docks_available'])
         self.latitude = float(info['lat'])

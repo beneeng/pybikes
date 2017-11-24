@@ -4,7 +4,7 @@
 
 import re
 import json
-import HTMLParser
+import html.parser
 
 from lxml import etree
 
@@ -21,7 +21,7 @@ endpoints = {
     'station'  : 'stations/{station_id}?contract={contract}&apiKey={api_key}'
 }
 
-html_parser = HTMLParser.HTMLParser()
+html_parser = html.parser.HTMLParser()
 
 class Cyclocity(BikeShareSystem):
 

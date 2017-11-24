@@ -4,7 +4,7 @@
 
 import re
 import json
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from lxml import html
 
 from .base import BikeShareSystem, BikeShareStation
@@ -56,7 +56,7 @@ class VelowayStation(BikeShareStation):
     """
     def __init__(self, info):
         super(VelowayStation, self).__init__()
-        self.name = urllib.unquote_plus(
+        self.name = urllib.parse.unquote_plus(
             info['name'].decode('latin-1').encode('utf-8')
         )
         self.bikes = int(info['ab'])
@@ -75,7 +75,7 @@ class VelowayStation(BikeShareStation):
             self.extra['status'] = 'CLOSED'
 
         if info['wcom']:
-            self.extra['address'] = urllib.unquote_plus(
+            self.extra['address'] = urllib.parse.unquote_plus(
                 info['wcom'].decode('latin-1').encode('utf-8')
             )
 
@@ -88,10 +88,10 @@ class VelowayStation(BikeShareStation):
 class VelowayDrupal(Veloway):
 
     # Station 01 - Gare SNCF (Vélos libres : 9 Places libres
-    station_rgx = (ur'Station\s+(?P<id>\d+)\s*-\s*'
-                   ur'(?P<name>.+)\s+'
-                   ur'\(Vélos\s+libres\s*:\s*(?P<bikes>\d+)\s+'
-                   ur'Places\s+libres\s*:\s*(?P<free>\d+)\)')
+    station_rgx = (r'Station\s+(?P<id>\d+)\s*-\s*'
+                   r'(?P<name>.+)\s+'
+                   r'\(Vélos\s+libres\s*:\s*(?P<bikes>\d+)\s+'
+                   r'Places\s+libres\s*:\s*(?P<free>\d+)\)')
 
     def update(self, scraper=None):
         scraper = scraper or utils.PyBikesScraper()
