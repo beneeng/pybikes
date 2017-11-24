@@ -11,6 +11,8 @@ sharing projects. More importantly, it powers the [CityBikes][1] project, and
 is composed of a set of classes and a pack of data files that provide instances
 for all different systems.
 
+**This is a simple 2to3 port of the software originally developed [here][3] **
+
 Installation
 ------------
 
@@ -33,8 +35,8 @@ sudo apt-get install libxml2 libxml2-dev libxslt1-dev libgeos-dev
 
 ### Important
 
-Make sure to use Python 2 and not Python 3 when installing or using pybikes!
-When installing via `pip`, make sure you are not using a version of `pip` bundled with Python 3!
+Make sure to use Python 3 and not Python 2 when installing or using pybikes!
+When installing via `pip`, make sure you are not using a version of `pip` bundled with Python 2!
 
 
 Usage
@@ -118,3 +120,4 @@ using a proxy. This class uses [Requests][2] module internally.
 
 [1]: http://www.citybik.es              "CityBikes"
 [2]: http://docs.python-requests.org    "Requests"
+[3]: https://github.com/eskerda/pybikes "Orignal repository"
