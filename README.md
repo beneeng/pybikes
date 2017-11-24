@@ -11,7 +11,7 @@ sharing projects. More importantly, it powers the [CityBikes][1] project, and
 is composed of a set of classes and a pack of data files that provide instances
 for all different systems.
 
-**This is a simple 2to3 port of the software originally developed [here][3] **
+** This is a simple 2to3 port of the software originally developed [here][3] **
 
 Installation
 ------------
